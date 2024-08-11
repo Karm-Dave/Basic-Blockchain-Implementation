@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Blockchain</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 50px; }
+        button { margin: 10px 0; padding: 10px 20px; }
+        pre { background: #f4f4f4; padding: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Blockchain Demo</h1>
+    <button id="mineBlock">Mine Block</button>
+    <button id="getChain">Get Blockchain</button>
+    <button id="checkValidity">Check Validity</button>
+    <div id="output"></div>
+
+    <script>
+        const apiUrl = 'http://127.0.0.1:5000';
+
+        document.getElementById('mineBlock').addEventListener('click', () => {
+            fetchData(`${apiUrl}/mine_block`, 'POST', { data: 'My Block Data' });
+        });
+
+        document.getElementById('getChain').addEventListener('click', () => {
+            fetchData(`${apiUrl}/get_chain`);
+        });
+
+        document.getElementById('checkValidity').addEventListener('click', () => {
+            fetchData(`${apiUrl}/is_valid`);
+        });
+
+        async function fetchData(url, method = 'GET', body = null) {
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: body ? JSON.stringify(body) : null
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const result = await response.json();
+                console.log('Fetch result:', result);
+                document.getElementById('output').innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`;
+            } catch (error) {
+                console.error('Fetch error:', error);
+                document.getElementById('output').innerHTML = `<pre>Error: ${error.message}</pre>`;
+            }
+        }
+    </script>
+</body>
+</html>
